@@ -529,7 +529,7 @@ def create_ui():
             connect_reuse_seed(subseed, reuse_subseed, generation_info, dummy_component, is_subseed=True)
 
             txt2img_args = dict(
-                fn=wrap_gradio_gpu_call(modules.txt2img.txt2img, extra_outputs=[None, '', '']),
+                fn=wrap_gradio_gpu_call(modules.txt2img.txt2imgReq, extra_outputs=[None, '', '']),
                 _js="submit",
                 inputs=[
                     dummy_component,
