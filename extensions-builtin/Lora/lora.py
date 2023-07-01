@@ -72,17 +72,17 @@ def convert_diffusers_name_to_compvis(key, is_sd2):
 
 
 class LoraOnDisk:
-    def __init__(self, name, filename):
+    def __init__(self, name, filename, metadata):
         self.name = name
         self.filename = filename
-        self.metadata = {}
+        self.metadata = metadata
         self.is_safetensors = os.path.splitext(filename)[1].lower() == ".safetensors"
 
-        if self.is_safetensors:
-            try:
-                self.metadata = sd_models.read_metadata_from_safetensors(filename)
-            except Exception as e:
-                errors.display(e, f"reading lora {filename}")
+        # if self.is_safetensors:
+        #     try:
+        #         self.metadata = sd_models.read_metadata_from_safetensors(filename)
+        #     except Exception as e:
+        #         errors.display(e, f"reading lora {filename}")
 
         if self.metadata:
             m = {}
