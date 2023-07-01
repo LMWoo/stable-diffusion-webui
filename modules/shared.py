@@ -279,8 +279,33 @@ def options_section(section_identifier, options_dict):
 
 
 def list_checkpoint_tiles():
-    import modules.sd_models
-    return modules.sd_models.checkpoint_tiles()
+    import base64
+    import requests
+    from modules.api.models import SDModelItem
+    from typing import List
+
+    url = 'http://mwgpu.mydomain.blog:4000/sdapi/v1/sd-models'
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str
+    }
+    
+    response = requests.request('GET', url=url, headers=headers)
+
+    out = []
+    for model in response.json():
+        newModel = SDModelItem(**model)
+        filename = newModel.filename
+        filename = os.path.basename(filename)
+        out.append(filename)
+    return out
 
 
 def refresh_checkpoints():
