@@ -52,7 +52,7 @@ def save_pil_to_file(self, pil_image, dir=None, format="png"):
             metadata.add_text(key, value)
             use_metadata = True
 
-    file_obj = tempfile.NamedTemporaryFile(delete=False, suffix=".png", dir="./output/")
+    file_obj = tempfile.NamedTemporaryFile(delete=False, suffix=".png", dir="./outputs/")
     pil_image.save(file_obj, pnginfo=(metadata if use_metadata else None))
     return file_obj.name
 
