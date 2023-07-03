@@ -8,22 +8,57 @@ from modules.textual_inversion import autocrop
 
 
 def preprocess(id_task, process_src, process_dst, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru=False, split_threshold=0.5, overlap_ratio=0.2, process_focal_crop=False, process_focal_crop_face_weight=0.9, process_focal_crop_entropy_weight=0.3, process_focal_crop_edges_weight=0.5, process_focal_crop_debug=False, process_multicrop=None, process_multicrop_mindim=None, process_multicrop_maxdim=None, process_multicrop_minarea=None, process_multicrop_maxarea=None, process_multicrop_objective=None, process_multicrop_threshold=None):
-    try:
-        if process_caption:
-            shared.interrogator.load()
+    import requests
+    import json
+    import base64
+    from modules.api.models import PreprocessResponse
 
-        if process_caption_deepbooru:
-            deepbooru.model.start()
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/preprocess"
 
-        preprocess_work(process_src, process_dst, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru, split_threshold, overlap_ratio, process_focal_crop, process_focal_crop_face_weight, process_focal_crop_entropy_weight, process_focal_crop_edges_weight, process_focal_crop_debug, process_multicrop, process_multicrop_mindim, process_multicrop_maxdim, process_multicrop_minarea, process_multicrop_maxarea, process_multicrop_objective, process_multicrop_threshold)
+    payload = json.dumps({
+        "id_task": id_task,
+        "process_src": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/src",
+        "process_dst": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/train",
+        "process_width": process_width,
+        "process_height": process_height,
+        "preprocess_txt_action": preprocess_txt_action,
+        "process_keep_original_size": process_keep_original_size,
+        "process_flip": process_flip,
+        "process_split": process_split,
+        "process_caption": process_caption,
+    })
 
-    finally:
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+    
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
 
-        if process_caption:
-            shared.interrogator.send_blip_to_ram()
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str
+    }
 
-        if process_caption_deepbooru:
-            deepbooru.model.stop()
+    response = requests.request("POST", url=url, headers=headers, data=payload)
+    print(response.json())
+
+    # try:
+    #     if process_caption:
+    #         shared.interrogator.load()
+
+    #     if process_caption_deepbooru:
+    #         deepbooru.model.start()
+
+    #     preprocess_work(process_src, process_dst, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru, split_threshold, overlap_ratio, process_focal_crop, process_focal_crop_face_weight, process_focal_crop_entropy_weight, process_focal_crop_edges_weight, process_focal_crop_debug, process_multicrop, process_multicrop_mindim, process_multicrop_maxdim, process_multicrop_minarea, process_multicrop_maxarea, process_multicrop_objective, process_multicrop_threshold)
+
+    # finally:
+
+    #     if process_caption:
+    #         shared.interrogator.send_blip_to_ram()
+
+    #     if process_caption_deepbooru:
+    #         deepbooru.model.stop()
 
 
 def listfiles(dirname):
