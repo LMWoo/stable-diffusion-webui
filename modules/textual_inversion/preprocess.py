@@ -8,7 +8,7 @@ from modules.textual_inversion import autocrop
 
 
 # def preprocess(id_task, process_src, process_dst, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru=False, split_threshold=0.5, overlap_ratio=0.2, process_focal_crop=False, process_focal_crop_face_weight=0.9, process_focal_crop_entropy_weight=0.3, process_focal_crop_edges_weight=0.5, process_focal_crop_debug=False, process_multicrop=None, process_multicrop_mindim=None, process_multicrop_maxdim=None, process_multicrop_minarea=None, process_multicrop_maxarea=None, process_multicrop_objective=None, process_multicrop_threshold=None):
-def preprocess(id_task, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru=False, split_threshold=0.5, overlap_ratio=0.2, process_focal_crop=False, process_focal_crop_face_weight=0.9, process_focal_crop_entropy_weight=0.3, process_focal_crop_edges_weight=0.5, process_focal_crop_debug=False, process_multicrop=None, process_multicrop_mindim=None, process_multicrop_maxdim=None, process_multicrop_minarea=None, process_multicrop_maxarea=None, process_multicrop_objective=None, process_multicrop_threshold=None):
+def preprocess(id_task, embedding_name, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru=False, split_threshold=0.5, overlap_ratio=0.2, process_focal_crop=False, process_focal_crop_face_weight=0.9, process_focal_crop_entropy_weight=0.3, process_focal_crop_edges_weight=0.5, process_focal_crop_debug=False, process_multicrop=None, process_multicrop_mindim=None, process_multicrop_maxdim=None, process_multicrop_minarea=None, process_multicrop_maxarea=None, process_multicrop_objective=None, process_multicrop_threshold=None):
     import requests
     import json
     import base64
@@ -18,8 +18,8 @@ def preprocess(id_task, process_width, process_height, preprocess_txt_action, pr
 
     payload = json.dumps({
         "id_task": id_task,
-        "process_src": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/src",
-        "process_dst": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/train",
+        "process_src": os.path.join('./data/textual_inversion', embedding_name, 'src'),
+        "process_dst": os.path.join('./data/textual_inversion', embedding_name, 'train'),
         "process_width": process_width,
         "process_height": process_height,
         "preprocess_txt_action": preprocess_txt_action,

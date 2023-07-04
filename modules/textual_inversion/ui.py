@@ -6,7 +6,7 @@ import modules.textual_inversion.textual_inversion
 import modules.textual_inversion.preprocess
 from modules import sd_hijack, shared
 
-def uploadFiles(files):
+def uploadFiles(files, train_embedding_name):
     import os
     import shutil
     import base64
@@ -14,14 +14,16 @@ def uploadFiles(files):
 
     reqFiles = []
 
+    print(train_embedding_name)
+
     for i, f in enumerate(files):
         filename = os.path.basename(f.name)
-        saveFilename =  os.path.join("./modules/textual_inversion/images", filename)
+        saveFilename =  os.path.join("./data", filename)
         shutil.move(f.name, saveFilename)
         reqFiles.append(('files', (filename, open(saveFilename, 'rb'), 'image/png')))
     
-    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadFiles"
-
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadFiles?embedding_name="+train_embedding_name
+    
     auth = 'user:password'
     auth_bytes = auth.encode('UTF-8')
 
@@ -94,7 +96,7 @@ def train_embedding(*args):
         embedding, filename = modules.textual_inversion.textual_inversion.train_embedding(*args)
 
         res = f"""
-Training {'interrupted' if shared.state.interrupted else 'finished'} at {embedding.step} steps.
+Training {'interrupted' if shared.state.interrupted else 'finished'} .
 Embedding saved to {html.escape(filename)}
 """
         return res, ""

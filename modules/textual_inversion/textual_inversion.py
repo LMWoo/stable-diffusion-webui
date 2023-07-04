@@ -221,25 +221,49 @@ class EmbeddingDatabase:
                     errors.report(f"Error loading embedding {fn}", exc_info=True)
                     continue
 
-    def load_textual_inversion_embeddings(self, force_reload=False):
-        if not force_reload:
-            need_reload = False
-            for embdir in self.embedding_dirs.values():
-                if embdir.has_changed():
-                    need_reload = True
-                    break
+    def get_embeddings(self):
+        import base64
+        import requests
+        from modules.api.models import EmbeddingsResponse
 
-            if not need_reload:
-                return
+        url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/embeddings"
+
+        auth = 'user:password'
+        auth_bytes = auth.encode('UTF-8')
+
+        auth_encoded = base64.b64encode(auth_bytes)
+        auth_encoded = bytes(auth_encoded)
+        auth_encoded_str = auth_encoded.decode('UTF-8')
+
+        headers = {
+            'accept': 'application/json',
+            'Authorization': 'Basic ' + auth_encoded_str,
+        }
+
+        response = requests.get(url=url, headers=headers)
+        res = EmbeddingsResponse(**(response.json()))
+
+        return res.loaded.keys()
+
+    def load_textual_inversion_embeddings(self, force_reload=False):
+        # if not force_reload:
+        #     need_reload = False
+        #     for embdir in self.embedding_dirs.values():
+        #         if embdir.has_changed():
+        #             need_reload = True
+        #             break
+
+        #     if not need_reload:
+        #         return
 
         self.ids_lookup.clear()
         self.word_embeddings.clear()
         self.skipped_embeddings.clear()
-        self.expected_shape = self.get_expected_shape()
+        # self.expected_shape = self.get_expected_shape()
 
-        for embdir in self.embedding_dirs.values():
-            self.load_from_dir(embdir)
-            embdir.update()
+        # for embdir in self.embedding_dirs.values():
+        #     self.load_from_dir(embdir)
+        #     embdir.update()
 
         # re-sort word_embeddings because load_from_dir may not load in alphabetic order.
         # using a temporary copy so we don't reinitialize self.word_embeddings in case other objects have a reference to it.
@@ -379,12 +403,12 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
 
     payload = json.dumps({
         "id_task": id_task,
-        "embedding_name": "EmbeddingTest",
+        "embedding_name": embedding_name,
         "learn_rate": learn_rate,
         "batch_size": batch_size,
         "gradient_step": gradient_step,
-        "data_root": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/train",
-        "log_directory": "/home/mwlee/stable-diffusion-webui/data/textual_inversion/Test/log",
+        "data_root": os.path.join('./data/textual_inversion', embedding_name, 'train'),
+        "log_directory": os.path.join('./data/textual_inversion', embedding_name, 'log'),
         "training_width": training_width,
         "training_height": training_height,
         "varsize": varsize,
@@ -423,7 +447,9 @@ def train_embedding(id_task, embedding_name, learn_rate, batch_size, gradient_st
     }
 
     response = requests.request("POST", url=url, headers=headers, data=payload)
-    print(response.json())
+
+    
+    return embedding_name, embedding_name
 
 #     save_embedding_every = save_embedding_every or 0
 #     create_image_every = create_image_every or 0
