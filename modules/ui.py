@@ -1171,6 +1171,8 @@ def create_ui():
                 with gr.Tab(label="Preprocess images", id="preprocess_images"):
                     # process_src = gr.Textbox(label='Source directory', elem_id="train_process_src")
                     # process_dst = gr.Textbox(label='Destination directory', elem_id="train_process_dst")
+                    files_upload = gr.File(file_count="multiple")
+                    
                     process_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_process_width")
                     process_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_process_height")
                     preprocess_txt_action = gr.Dropdown(label='Existing Caption txt Action', value="ignore", choices=["ignore", "copy", "prepend", "append"], elem_id="train_preprocess_txt_action")
@@ -1333,6 +1335,12 @@ def create_ui():
             ]
         )
 
+        files_upload.upload(
+            fn=modules.textual_inversion.ui.uploadFiles,
+            inputs=files_upload,
+            show_progress=True,
+        )
+        
         run_preprocess.click(
             fn=wrap_gradio_gpu_call(modules.textual_inversion.ui.preprocess, extra_outputs=[gr.update()]),
             _js="start_training_textual_inversion",

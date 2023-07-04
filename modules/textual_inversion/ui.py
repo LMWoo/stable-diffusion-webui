@@ -6,6 +6,13 @@ import modules.textual_inversion.textual_inversion
 import modules.textual_inversion.preprocess
 from modules import sd_hijack, shared
 
+def uploadFiles(files):
+    import os
+    import shutil
+    for i, f in enumerate(files):
+        filename = os.path.basename(f.name)
+
+        shutil.move(f.name, os.path.join("./modules/textual_inversion/images", filename))
 
 def create_embedding(name, initialization_text, nvpt, overwrite_old):
     import requests
