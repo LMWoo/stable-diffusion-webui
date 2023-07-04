@@ -149,6 +149,25 @@ class State:
         self.skipped = True
 
     def interrupt(self):
+        import base64
+        import requests
+
+        url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/interrupt"
+        
+        auth = 'user:password'
+        auth_bytes = auth.encode('UTF-8')
+
+        auth_encoded = base64.b64encode(auth_bytes)
+        auth_encoded = bytes(auth_encoded)
+        auth_encoded_str = auth_encoded.decode('UTF-8')
+        
+        headers = {
+            'accept': 'application/json',
+            'Authorization': 'Basic ' + auth_encoded_str
+        }
+
+        response = requests.request("POST", url=url, headers=headers)
+
         self.interrupted = True
 
     def nextjob(self):
