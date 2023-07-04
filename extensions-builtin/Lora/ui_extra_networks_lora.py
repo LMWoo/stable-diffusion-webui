@@ -10,8 +10,6 @@ class ExtraNetworksPageLora(ui_extra_networks.ExtraNetworksPage):
         super().__init__('Lora')
 
     def refresh(self):
-        print('refresh')
-
         def lora_refresh():
             import requests
             import json
@@ -30,12 +28,12 @@ class ExtraNetworksPageLora(ui_extra_networks.ExtraNetworksPage):
                 'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + auth_encoded_str
             }
-            print('lora_refresh')
+
             response = requests.request('POST', url=url, headers=headers)
             
 
         lora_refresh()
-
+        
         lora.available_loras.clear()
         lora.available_lora_aliases.clear()
         lora.forbidden_lora_aliases.clear()
@@ -63,7 +61,6 @@ class ExtraNetworksPageLora(ui_extra_networks.ExtraNetworksPage):
         response = requests.request("GET", url=url, headers=headers)
         response = response.json()
         for loraData in response:
-            print(loraData["name"], loraData["path"])
             name = os.path.splitext(os.path.basename(loraData["path"]))[0]
             filename = loraData["path"]
             metadata = loraData["metadata"]
@@ -72,10 +69,10 @@ class ExtraNetworksPageLora(ui_extra_networks.ExtraNetworksPage):
             
             lora.available_loras[name] = entry
 
-            lora.forbidden_lora_aliases[entry.alias.lower()] = 1
+            # lora.forbidden_lora_aliases[entry.alias.lower()] = 1
 
-            lora.available_lora_aliases[name] = entry
-            lora.available_lora_aliases[entry.alias] = entry
+            # lora.available_lora_aliases[name] = entry
+            # lora.available_lora_aliases[entry.alias] = entry
         # lora.list_available_loras()
 
     def list_items(self):
