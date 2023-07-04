@@ -1169,8 +1169,8 @@ def create_ui():
                             create_hypernetwork = gr.Button(value="Create hypernetwork", variant='primary', elem_id="train_create_hypernetwork")
 
                 with gr.Tab(label="Preprocess images", id="preprocess_images"):
-                    process_src = gr.Textbox(label='Source directory', elem_id="train_process_src")
-                    process_dst = gr.Textbox(label='Destination directory', elem_id="train_process_dst")
+                    # process_src = gr.Textbox(label='Source directory', elem_id="train_process_src")
+                    # process_dst = gr.Textbox(label='Destination directory', elem_id="train_process_dst")
                     process_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_process_width")
                     process_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_process_height")
                     preprocess_txt_action = gr.Dropdown(label='Existing Caption txt Action', value="ignore", choices=["ignore", "copy", "prepend", "append"], elem_id="train_preprocess_txt_action")
@@ -1338,8 +1338,8 @@ def create_ui():
             _js="start_training_textual_inversion",
             inputs=[
                 dummy_component,
-                process_src,
-                process_dst,
+                # process_src,
+                # process_dst,
                 process_width,
                 process_height,
                 preprocess_txt_action,
