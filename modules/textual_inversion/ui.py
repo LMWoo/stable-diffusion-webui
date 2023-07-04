@@ -9,10 +9,33 @@ from modules import sd_hijack, shared
 def uploadFiles(files):
     import os
     import shutil
+    import base64
+    import requests
+
+    reqFiles = []
+
     for i, f in enumerate(files):
         filename = os.path.basename(f.name)
+        saveFilename =  os.path.join("./modules/textual_inversion/images", filename)
+        shutil.move(f.name, saveFilename)
+        reqFiles.append(('files', (filename, open(saveFilename, 'rb'), 'image/png')))
+    
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadFiles"
 
-        shutil.move(f.name, os.path.join("./modules/textual_inversion/images", filename))
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'accept': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str,
+    }
+
+    requests.request("POST", url=url, files=reqFiles, headers=headers)
+
 
 def create_embedding(name, initialization_text, nvpt, overwrite_old):
     import requests
