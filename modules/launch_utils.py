@@ -279,6 +279,12 @@ def prepare_environment():
     if not is_installed("open_clip"):
         run_pip(f"install {openclip_package}", "open_clip")
 
+    if not is_installed("easygui"):
+        run(f"pip install easygui")
+    
+    if not is_installed("rich"):
+        run(f"pip install rich")
+
     if (not is_installed("xformers") or args.reinstall_xformers) and args.xformers:
         if platform.system() == "Windows":
             if platform.python_version().startswith("3.10"):
