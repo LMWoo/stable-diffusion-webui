@@ -285,6 +285,25 @@ def prepare_environment():
     if not is_installed("rich"):
         run(f"pip install rich")
 
+    if not is_installed("albumentations"):
+        run(f"pip install albumentations==1.3.0")
+
+    if not is_installed("diffusers"):
+        run(f"pip install diffusers[torch]==0.10.2")
+    
+    if not is_installed("toml"):
+        run(f"pip install toml==0.10.2")
+    
+    if not is_installed("voluptuous"):
+        run(f"pip install voluptuous==0.13.1")
+    
+    if not is_installed("xformers"):
+        run(f"pip install xformers==0.0.20")
+    
+    if not is_installed("bitsandbytes"):
+        run(f"pip install bitsandbytes==0.35.0")
+
+
     if (not is_installed("xformers") or args.reinstall_xformers) and args.xformers:
         if platform.system() == "Windows":
             if platform.python_version().startswith("3.10"):
