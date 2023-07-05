@@ -349,6 +349,26 @@ def open_configuration(
 
     return tuple(values)
 
+def api_tutorial_req():
+    import requests
+    import base64
+
+    url = "http://mwgpu.mydomain.blog:4000/kohya/v1/tutorial"
+
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str
+    }
+
+    response = requests.request("POST", url=url, headers=headers)
+    print(response.json())
 
 def train_model(
     headless,
@@ -1673,8 +1693,7 @@ def lora_tab(
     )
 
     button_run.click(
-        train_model,
-        inputs=[dummy_headless] + [dummy_db_false] + settings_list,
+        api_tutorial_req,
         show_progress=False,
     )
 
