@@ -16,8 +16,6 @@ from lora_gui import lora_tab
 import os
 from library.custom_logging import setup_logging
 
-from modules import script_callbacks
-
 # Set up logging
 log = setup_logging()
 
