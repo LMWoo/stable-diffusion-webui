@@ -209,6 +209,8 @@ class Api:
         self.add_api_route("/sdapi/v1/reload-checkpoint", self.reloadapi, methods=["POST"])
         self.add_api_route("/sdapi/v1/scripts", self.get_scripts_list, methods=["GET"], response_model=models.ScriptsList)
         self.add_api_route("/sdapi/v1/script-info", self.get_script_info, methods=["GET"], response_model=List[models.ScriptInfo])
+        self.add_api_route("/sdapi/v1/uploadEmbeddingFiles", self.uploadEmbeddingFiles, methods=["POST"])
+        self.add_api_route("/sdapi/v1/uploadDreamboothLoraFiles", self.uploadDreamboothLoraFiles, methods=["POST"])
 
         self.default_script_arg_txt2img = []
         self.default_script_arg_img2img = []
@@ -713,7 +715,7 @@ class Api:
             cuda = {'error': f'{err}'}
         return models.MemoryResponse(ram=ram, cuda=cuda)
 
-    async def uploadFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], embedding_name: str):
+    async def uploadEmbeddingFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], embedding_name: str):
         import os
         for file in files:
             save_file = await file.read()
@@ -726,7 +728,24 @@ class Api:
                 os.mkdir(os.path.join(embedding_path, 'log'))
             with open(os.path.join(embedding_path, 'src', file.filename), "wb") as fp:
                 fp.write(save_file)
-        return {"file_uploaded"}
+        return {"Embedding File_uploaded"}
+    
+    async def uploadDreamboothLoraFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], dreambooth_lora_name: str):
+        import os
+
+        if not os.path.exists('./data/dreambooth_lora'):
+            os.mkdir('./data/dreambooth_lora')
+            
+        for file in files:
+            save_file = await file.read()
+
+            dreambooth_lora_path = os.path.join('./data/dreambooth_lora', dreambooth_lora_name)
+            if not os.path.exists(dreambooth_lora_path):
+                os.mkdir(dreambooth_lora_path)
+                os.mkdir(os.path.join(dreambooth_lora_path, 'images'))
+            with open(os.path.join(dreambooth_lora_path, 'images', file.filename), "wb") as fp:
+                fp.write(save_file)
+        return {"Dreambooth lora file uploaded"}
 
     def launch(self, server_name, port):
         self.app.include_router(self.router)

@@ -22,7 +22,7 @@ def uploadFiles(files, train_embedding_name):
         shutil.move(f.name, saveFilename)
         reqFiles.append(('files', (filename, open(saveFilename, 'rb'), 'image/png')))
     
-    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadFiles?embedding_name="+train_embedding_name
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadEmbeddingFiles?embedding_name="+train_embedding_name
     
     auth = 'user:password'
     auth_bytes = auth.encode('UTF-8')
