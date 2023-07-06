@@ -6,7 +6,7 @@ import uvicorn
 import gradio as gr
 from threading import Lock
 from io import BytesIO
-from fastapi import APIRouter, Depends, FastAPI, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, Request, Response, UploadFile, File
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
@@ -28,6 +28,7 @@ from modules.sd_models_config import find_checkpoint_config_near_filename
 from modules.realesrgan_model import get_realesrgan_models
 from modules import devices
 from typing import Dict, List, Any
+from typing_extensions import Annotated
 import piexif
 import piexif.helper
 
@@ -711,6 +712,21 @@ class Api:
         except Exception as err:
             cuda = {'error': f'{err}'}
         return models.MemoryResponse(ram=ram, cuda=cuda)
+
+    async def uploadFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], embedding_name: str):
+        import os
+        for file in files:
+            save_file = await file.read()
+            
+            embedding_path = os.path.join('./data/textual_inversion', embedding_name)
+            if not os.path.exists(embedding_path):
+                os.mkdir(embedding_path)
+                os.mkdir(os.path.join(embedding_path, 'src'))
+                os.mkdir(os.path.join(embedding_path, 'train'))
+                os.mkdir(os.path.join(embedding_path, 'log'))
+            with open(os.path.join(embedding_path, 'src', file.filename), "wb") as fp:
+                fp.write(save_file)
+        return {"file_uploaded"}
 
     def launch(self, server_name, port):
         self.app.include_router(self.router)
