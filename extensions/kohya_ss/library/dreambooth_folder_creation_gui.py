@@ -21,6 +21,46 @@ def copy_info_to_Folders_tab(training_folder):
 
     return img_folder, reg_folder, model_folder, log_folder
 
+def dreambooth_folder_preparation_req(
+    util_training_images_dir_input,
+    util_training_images_repeat_input,
+    util_instance_prompt_input,
+    util_regularization_images_dir_input,
+    util_regularization_images_repeat_input,
+    util_class_prompt_input,
+    util_training_dir_output,
+):
+    import requests
+    import base64
+
+    url = "http://mwgpu.mydomain.blog:4000/kohya/v1/dreambooth_lora_folder_preparation"
+
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    from extensions.kohya_ss.kohya_api import DreamboothLoraFolderPreparationRequest
+
+    req = DreamboothLoraFolderPreparationRequest(
+        util_training_images_dir_input =  util_training_images_dir_input,
+        util_training_images_repeat_input =  util_training_images_repeat_input,
+        util_instance_prompt_input =  util_instance_prompt_input,
+        util_regularization_images_dir_input =  util_regularization_images_dir_input,
+        util_regularization_images_repeat_input =  util_regularization_images_repeat_input,
+        util_class_prompt_input =  util_class_prompt_input,
+        util_training_dir_output =  util_training_dir_output,
+    )
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str
+    }
+
+    response = requests.request("POST", url=url, headers=headers, data=req.json())
+    print(response.json())
 
 def dreambooth_folder_preparation(
     util_training_images_dir_input,
@@ -190,7 +230,7 @@ def gradio_dreambooth_folder_creation_tab(
             )
         button_prepare_training_data = gr.Button('Prepare training data')
         button_prepare_training_data.click(
-            dreambooth_folder_preparation,
+            dreambooth_folder_preparation_req,
             inputs=[
                 util_training_images_dir_input,
                 util_training_images_repeat_input,

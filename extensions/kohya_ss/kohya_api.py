@@ -14,6 +14,15 @@ class TutorialRequest(BaseModel):
 class TutorialResponse(BaseModel):
     data: str = Field(title='data', description="tutorial data response")
 
+class DreamboothLoraFolderPreparationRequest(BaseModel):
+    util_training_images_dir_input : Any
+    util_training_images_repeat_input : Any
+    util_instance_prompt_input : Any
+    util_regularization_images_dir_input : Any
+    util_regularization_images_repeat_input : Any
+    util_class_prompt_input : Any
+    util_training_dir_output : Any
+
 class DreamboothLoraTrainRequest(BaseModel):
     headless : Any
     print_only : Any
@@ -146,6 +155,13 @@ class Api:
             response_model=DreamboothLoraTrainResponse,
         )
 
+        self.add_api_route(
+            "dreambooth_lora_folder_preparation",
+            self.dreambooth_lora_folder_preparation,
+            methods=['POST'],
+        )
+
+
     def auth(self, creds: HTTPBasicCredentials = Depends(HTTPBasic())):
         if creds.username in self.credentials:
             if compare_digest(creds.password, self.credentials[creds.username]):
@@ -172,6 +188,19 @@ class Api:
             data="tutorial output"
         )
 
+    def dreambooth_lora_folder_preparation(self, req: DreamboothLoraFolderPreparationRequest):
+        from library.dreambooth_folder_creation_gui import dreambooth_folder_preparation
+        dreambooth_folder_preparation(
+            util_training_images_dir_input = req.util_training_images_dir_input,
+            util_training_images_repeat_input = req.util_training_images_repeat_input,
+            util_instance_prompt_input = req.util_instance_prompt_input,
+            util_regularization_images_dir_input = req.util_regularization_images_dir_input,
+            util_regularization_images_repeat_input = req.util_regularization_images_repeat_input,
+            util_class_prompt_input = req.util_class_prompt_input,
+            util_training_dir_output = req.util_training_dir_output,
+        )
+        return {"dreambooth lora folder preparation finished"}
+    
     def dreambooth_lora_train(self, req: DreamboothLoraTrainRequest):
         from lora_gui import train_model
         train_model(
