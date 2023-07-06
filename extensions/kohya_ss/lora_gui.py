@@ -685,6 +685,7 @@ def train_model(
     rank_dropout,
     module_dropout,
 ):
+    output_dir = "./models/Lora"
     print_only_bool = True if print_only.get('label') == 'True' else False
     log.info(f'Start training LoRA {LoRA_type} ...')
     headless_bool = True if headless.get('label') == 'True' else False
