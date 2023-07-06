@@ -208,7 +208,6 @@ def save_configuration(
 
     return file_path
 
-
 def open_configuration(
     ask_for_file,
     file_path,
@@ -349,11 +348,114 @@ def open_configuration(
 
     return tuple(values)
 
-def api_tutorial_req():
+def train_model_req(
+    headless,
+    print_only,
+    pretrained_model_name_or_path,
+    v2,
+    v_parameterization,
+    logging_dir,
+    train_data_dir,
+    reg_data_dir,
+    output_dir,
+    max_resolution,
+    learning_rate,
+    lr_scheduler,
+    lr_warmup,
+    train_batch_size,
+    epoch,
+    save_every_n_epochs,
+    mixed_precision,
+    save_precision,
+    seed,
+    num_cpu_threads_per_process,
+    cache_latents,
+    cache_latents_to_disk,
+    caption_extension,
+    enable_bucket,
+    gradient_checkpointing,
+    full_fp16,
+    no_token_padding,
+    stop_text_encoder_training_pct,
+    # use_8bit_adam,
+    xformers,
+    save_model_as,
+    shuffle_caption,
+    save_state,
+    resume,
+    prior_loss_weight,
+    text_encoder_lr,
+    unet_lr,
+    network_dim,
+    lora_network_weights,
+    dim_from_weights,
+    color_aug,
+    flip_aug,
+    clip_skip,
+    gradient_accumulation_steps,
+    mem_eff_attn,
+    output_name,
+    model_list,  # Keep this. Yes, it is unused here but required given the common list used
+    max_token_length,
+    max_train_epochs,
+    max_data_loader_n_workers,
+    network_alpha,
+    training_comment,
+    keep_tokens,
+    lr_scheduler_num_cycles,
+    lr_scheduler_power,
+    persistent_data_loader_workers,
+    bucket_no_upscale,
+    random_crop,
+    bucket_reso_steps,
+    caption_dropout_every_n_epochs,
+    caption_dropout_rate,
+    optimizer,
+    optimizer_args,
+    noise_offset_type,
+    noise_offset,
+    adaptive_noise_scale,
+    multires_noise_iterations,
+    multires_noise_discount,
+    LoRA_type,
+    factor,
+    use_cp,
+    decompose_both,
+    train_on_input,
+    conv_dim,
+    conv_alpha,
+    sample_every_n_steps,
+    sample_every_n_epochs,
+    sample_sampler,
+    sample_prompts,
+    additional_parameters,
+    vae_batch_size,
+    min_snr_gamma,
+    down_lr_weight,
+    mid_lr_weight,
+    up_lr_weight,
+    block_lr_zero_threshold,
+    block_dims,
+    block_alphas,
+    conv_dims,
+    conv_alphas,
+    weighted_captions,
+    unit,
+    save_every_n_steps,
+    save_last_n_steps,
+    save_last_n_steps_state,
+    use_wandb,
+    wandb_api_key,
+    scale_v_pred_loss_like_noise_pred,
+    scale_weight_norms,
+    network_dropout,
+    rank_dropout,
+    module_dropout,
+):
     import requests
     import base64
 
-    url = "http://mwgpu.mydomain.blog:4000/kohya/v1/tutorial"
+    url = "http://mwgpu.mydomain.blog:4000/kohya/v1/dreambooth_lora_train"
 
     auth = 'user:password'
     auth_bytes = auth.encode('UTF-8')
@@ -362,12 +464,121 @@ def api_tutorial_req():
     auth_encoded = bytes(auth_encoded)
     auth_encoded_str = auth_encoded.decode('UTF-8')
 
+    # from extensions.kohya_ss.kohya_api import TutorialRequest
+
+    # req = TutorialRequest(data="tutorial request")
+    from extensions.kohya_ss.kohya_api import DreamboothLoraTrainRequest
+
+    req = DreamboothLoraTrainRequest(
+        headless= headless,
+        print_only= print_only,
+        pretrained_model_name_or_path= pretrained_model_name_or_path,
+        v2= v2,
+        v_parameterization= v_parameterization,
+        logging_dir= logging_dir,
+        train_data_dir= train_data_dir,
+        reg_data_dir= reg_data_dir,
+        output_dir= output_dir,
+        max_resolution= max_resolution,
+        learning_rate= learning_rate,
+        lr_scheduler= lr_scheduler,
+        lr_warmup= lr_warmup,
+        train_batch_size= train_batch_size,
+        epoch= epoch,
+        save_every_n_epochs= save_every_n_epochs,
+        mixed_precision= mixed_precision,
+        save_precision= save_precision,
+        seed= seed,
+        num_cpu_threads_per_process= num_cpu_threads_per_process,
+        cache_latents= cache_latents,
+        cache_latents_to_disk= cache_latents_to_disk,
+        caption_extension= caption_extension,
+        enable_bucket= enable_bucket,
+        gradient_checkpointing= gradient_checkpointing,
+        full_fp16= full_fp16,
+        no_token_padding= no_token_padding,
+        stop_text_encoder_training_pct= stop_text_encoder_training_pct,
+        xformers= xformers,
+        save_model_as= save_model_as,
+        shuffle_caption= shuffle_caption,
+        save_state= save_state,
+        resume= resume,
+        prior_loss_weight= prior_loss_weight,
+        text_encoder_lr= text_encoder_lr,
+        unet_lr= unet_lr,
+        network_dim= network_dim,
+        lora_network_weights= lora_network_weights,
+        dim_from_weights= dim_from_weights,
+        color_aug= color_aug,
+        flip_aug= flip_aug,
+        clip_skip= clip_skip,
+        gradient_accumulation_steps= gradient_accumulation_steps,
+        mem_eff_attn= mem_eff_attn,
+        output_name= output_name,
+        model_list=model_list,  
+        max_token_length= max_token_length,
+        max_train_epochs= max_train_epochs,
+        max_data_loader_n_workers= max_data_loader_n_workers,
+        network_alpha= network_alpha,
+        training_comment= training_comment,
+        keep_tokens= keep_tokens,
+        lr_scheduler_num_cycles= lr_scheduler_num_cycles,
+        lr_scheduler_power= lr_scheduler_power,
+        persistent_data_loader_workers= persistent_data_loader_workers,
+        bucket_no_upscale= bucket_no_upscale,
+        random_crop= random_crop,
+        bucket_reso_steps= bucket_reso_steps,
+        caption_dropout_every_n_epochs= caption_dropout_every_n_epochs,
+        caption_dropout_rate= caption_dropout_rate,
+        optimizer= optimizer,
+        optimizer_args= optimizer_args,
+        noise_offset_type= noise_offset_type,
+        noise_offset= noise_offset,
+        adaptive_noise_scale= adaptive_noise_scale,
+        multires_noise_iterations= multires_noise_iterations,
+        multires_noise_discount= multires_noise_discount,
+        LoRA_type= LoRA_type,
+        factor= factor,
+        use_cp= use_cp,
+        decompose_both= decompose_both,
+        train_on_input= train_on_input,
+        conv_dim= conv_dim,
+        conv_alpha= conv_alpha,
+        sample_every_n_steps= sample_every_n_steps,
+        sample_every_n_epochs= sample_every_n_epochs,
+        sample_sampler= sample_sampler,
+        sample_prompts= sample_prompts,
+        additional_parameters= additional_parameters,
+        vae_batch_size= vae_batch_size,
+        min_snr_gamma= min_snr_gamma,
+        down_lr_weight= down_lr_weight,
+        mid_lr_weight= mid_lr_weight,
+        up_lr_weight= up_lr_weight,
+        block_lr_zero_threshold= block_lr_zero_threshold,
+        block_dims= block_dims,
+        block_alphas= block_alphas,
+        conv_dims= conv_dims,
+        conv_alphas= conv_alphas,
+        weighted_captions= weighted_captions,
+        unit= unit,
+        save_every_n_steps= save_every_n_steps,
+        save_last_n_steps= save_last_n_steps,
+        save_last_n_steps_state= save_last_n_steps_state,
+        use_wandb= use_wandb,
+        wandb_api_key= wandb_api_key,
+        scale_v_pred_loss_like_noise_pred= scale_v_pred_loss_like_noise_pred,
+        scale_weight_norms= scale_weight_norms,
+        network_dropout= network_dropout,
+        rank_dropout= rank_dropout,
+        module_dropout= module_dropout,
+    )
+    
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Basic ' + auth_encoded_str
     }
 
-    response = requests.request("POST", url=url, headers=headers)
+    response = requests.request("POST", url=url, headers=headers, data=req.json())
     print(response.json())
 
 def train_model(
@@ -657,7 +868,7 @@ def train_model(
     lr_warmup_steps = round(float(int(lr_warmup) * int(max_train_steps) / 100))
     log.info(f'lr_warmup_steps = {lr_warmup_steps}')
 
-    run_cmd = f'accelerate launch --num_cpu_threads_per_process={num_cpu_threads_per_process} "train_network.py"'
+    run_cmd = f'accelerate launch --num_cpu_threads_per_process={num_cpu_threads_per_process} "./extensions/kohya_ss/train_network.py"'
 
     if v2:
         run_cmd += ' --v2'
@@ -967,7 +1178,6 @@ def train_model(
             save_inference_file(
                 output_dir, v2, v_parameterization, output_name
             )
-
 
 def lora_tab(
     train_data_dir_input=gr.Textbox(),
@@ -1693,7 +1903,8 @@ def lora_tab(
     )
 
     button_run.click(
-        api_tutorial_req,
+        train_model_req,
+        inputs=[dummy_headless] + [dummy_db_false] + settings_list,
         show_progress=False,
     )
 
@@ -1708,103 +1919,4 @@ def lora_tab(
         reg_data_dir,
         output_dir,
         logging_dir,
-    )
-
-
-def UI(**kwargs):
-    css = ''
-
-    headless = kwargs.get('headless', False)
-    log.info(f'headless: {headless}')
-
-    if os.path.exists('./style.css'):
-        with open(os.path.join('./style.css'), 'r', encoding='utf8') as file:
-            log.info('Load CSS...')
-            css += file.read() + '\n'
-
-    interface = gr.Blocks(
-        css=css, title='Kohya_ss GUI', theme=gr.themes.Default()
-    )
-
-    with interface:
-        with gr.Tab('LoRA'):
-            (
-                train_data_dir_input,
-                reg_data_dir_input,
-                output_dir_input,
-                logging_dir_input,
-            ) = lora_tab(headless=headless)
-        with gr.Tab('Utilities'):
-            utilities_tab(
-                train_data_dir_input=train_data_dir_input,
-                reg_data_dir_input=reg_data_dir_input,
-                output_dir_input=output_dir_input,
-                logging_dir_input=logging_dir_input,
-                enable_copy_info_button=True,
-                headless=headless,
-            )
-
-    # Show the interface
-    launch_kwargs = {}
-    username = kwargs.get('username')
-    password = kwargs.get('password')
-    server_port = kwargs.get('server_port', 0)
-    inbrowser = kwargs.get('inbrowser', False)
-    share = kwargs.get('share', False)
-    server_name = kwargs.get('listen')
-
-    launch_kwargs['server_name'] = server_name
-    if username and password:
-        launch_kwargs['auth'] = (username, password)
-    if server_port > 0:
-        launch_kwargs['server_port'] = server_port
-    if inbrowser:
-        launch_kwargs['inbrowser'] = inbrowser
-    if share:
-        launch_kwargs['share'] = share
-    log.info(launch_kwargs)
-    interface.launch(**launch_kwargs)
-
-
-if __name__ == '__main__':
-    # torch.cuda.set_per_process_memory_fraction(0.48)
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--listen',
-        type=str,
-        default='127.0.0.1',
-        help='IP to listen on for connections to Gradio',
-    )
-    parser.add_argument(
-        '--username', type=str, default='', help='Username for authentication'
-    )
-    parser.add_argument(
-        '--password', type=str, default='', help='Password for authentication'
-    )
-    parser.add_argument(
-        '--server_port',
-        type=int,
-        default=0,
-        help='Port to run the server listener on',
-    )
-    parser.add_argument(
-        '--inbrowser', action='store_true', help='Open in browser'
-    )
-    parser.add_argument(
-        '--share', action='store_true', help='Share the gradio UI'
-    )
-    parser.add_argument(
-        '--headless', action='store_true', help='Is the server headless'
-    )
-
-    args = parser.parse_args()
-
-    UI(
-        username=args.username,
-        password=args.password,
-        inbrowser=args.inbrowser,
-        server_port=args.server_port,
-        share=args.share,
-        listen=args.listen,
-        headless=args.headless,
     )
