@@ -7,6 +7,37 @@ from modules import devices, sd_hijack, shared
 not_available = ["hardswish", "multiheadattention"]
 keys = [x for x in modules.hypernetworks.hypernetwork.HypernetworkModule.activation_dict if x not in not_available]
 
+def uploadHypernetworkFilesReq(files, train_hypernetwork_name):
+    import os
+    import shutil
+    import base64
+    import requests
+
+    reqFiles = []
+
+    for i, f in enumerate(files):
+        filename = os.path.basename(f.name)
+        saveFilename = os.path.join("./data", filename)
+        shutil.move(f.name, filename)
+        reqFiles.append(('files', (filename, open(saveFilename, 'rb'), 'image/png')))
+
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadHypernetworkFiles?hypernetwork_name="+train_hypernetwork_name    
+    
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'accept': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str,
+    }
+
+    requests.request("POST", url=url, files=reqFiles, headers=headers)
+
+
 def create_hypernetwork_req(name, enable_sizes, overwrite_old, layer_structure=None, activation_func=None, weight_init=None, add_layer_norm=False, use_dropout=False, dropout_structure=None):
     import requests
     import json

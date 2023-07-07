@@ -6,7 +6,7 @@ import modules.textual_inversion.textual_inversion
 import modules.textual_inversion.preprocess
 from modules import sd_hijack, shared
 
-def uploadFiles(files, train_embedding_name):
+def uploadEmbeddingFilesReq(files, train_embedding_name):
     import os
     import shutil
     import base64

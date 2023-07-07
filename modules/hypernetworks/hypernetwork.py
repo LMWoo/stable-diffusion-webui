@@ -489,6 +489,94 @@ def create_hypernetwork(name, enable_sizes, overwrite_old, layer_structure=None,
 
     shared.reload_hypernetworks()
 
+def get_hypernetworks_req():
+    import base64
+    import requests
+    from pydantic import BaseModel
+    from modules.api.models import HypernetworkItem
+    from typing import List
+
+    class HypernetworksResponse(BaseModel):
+        loaded: List[HypernetworkItem]
+
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/hypernetworks"
+
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'accept': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str,
+    }
+
+    response:HypernetworksResponse = requests.get(url=url, headers=headers)
+
+    res = response.json()
+    print(res)
+    outputs = []
+
+    for r in res:
+        outputs.append(r["name"])
+    return outputs
+
+def train_hypernetwork_req(id_task, hypernetwork_name, learn_rate, batch_size, gradient_step, data_root, log_directory, training_width, training_height, varsize, steps, clip_grad_mode, clip_grad_value, shuffle_tags, tag_drop_out, latent_sampling_method, use_weight, create_image_every, save_hypernetwork_every, template_filename, preview_from_txt2img, preview_prompt, preview_negative_prompt, preview_steps, preview_sampler_index, preview_cfg_scale, preview_seed, preview_width, preview_height):
+    import requests
+    import json
+    import base64
+    from modules.api.models import TrainResponse
+
+    url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/train/hypernetwork"
+    payload = json.dumps({
+        "id_task": id_task, 
+        "hypernetwork_name": hypernetwork_name, 
+        "learn_rate": learn_rate, 
+        "batch_size": batch_size, 
+        "gradient_step": gradient_step, 
+        "data_root": os.path.join('./data/hypernetwork', hypernetwork_name, 'log'), 
+        "log_directory": os.path.join('./data/hypernetwork', hypernetwork_name, 'log'), 
+        "training_width": training_width, 
+        "training_height": training_height, 
+        "varsize": varsize, 
+        "steps": steps, 
+        "clip_grad_mode": clip_grad_mode, 
+        "clip_grad_value": clip_grad_value, 
+        "shuffle_tags": shuffle_tags, 
+        "tag_drop_out": tag_drop_out, 
+        "latent_sampling_method": latent_sampling_method, 
+        "use_weight": use_weight, 
+        "create_image_every": create_image_every, 
+        "save_hypernetwork_every": save_hypernetwork_every, 
+        "template_filename": template_filename, 
+        "preview_from_txt2img": preview_from_txt2img, 
+        "preview_prompt": preview_prompt, 
+        "preview_negative_prompt": preview_negative_prompt, 
+        "preview_steps": preview_steps, 
+        "preview_sampler_index": preview_sampler_index, 
+        "preview_cfg_scale": preview_cfg_scale, 
+        "preview_seed": preview_seed, 
+        "preview_width": preview_width, 
+        "preview_heig": preview_height,
+    })
+
+    auth = 'user:password'
+    auth_bytes = auth.encode('UTF-8')
+
+    auth_encoded = base64.b64encode(auth_bytes)
+    auth_encoded = bytes(auth_encoded)
+    auth_encoded_str = auth_encoded.decode('UTF-8')
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + auth_encoded_str
+    }
+
+    response = requests.request("POST", url=url, headers=headers, data=payload)
+    
+    return hypernetwork_name, hypernetwork_name
 
 def train_hypernetwork(id_task, hypernetwork_name, learn_rate, batch_size, gradient_step, data_root, log_directory, training_width, training_height, varsize, steps, clip_grad_mode, clip_grad_value, shuffle_tags, tag_drop_out, latent_sampling_method, use_weight, create_image_every, save_hypernetwork_every, template_filename, preview_from_txt2img, preview_prompt, preview_negative_prompt, preview_steps, preview_sampler_index, preview_cfg_scale, preview_seed, preview_width, preview_height):
     # images allows training previews to have infotext. Importing it at the top causes a circular import problem.
@@ -803,3 +891,4 @@ def save_hypernetwork(hypernetwork, checkpoint, hypernetwork_name, filename):
         hypernetwork.sd_checkpoint_name = old_sd_checkpoint_name
         hypernetwork.name = old_hypernetwork_name
         raise
+

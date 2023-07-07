@@ -210,6 +210,7 @@ class Api:
         self.add_api_route("/sdapi/v1/scripts", self.get_scripts_list, methods=["GET"], response_model=models.ScriptsList)
         self.add_api_route("/sdapi/v1/script-info", self.get_script_info, methods=["GET"], response_model=List[models.ScriptInfo])
         self.add_api_route("/sdapi/v1/uploadEmbeddingFiles", self.uploadEmbeddingFiles, methods=["POST"])
+        self.add_api_route("/sdapi/v1/uploadHypernetworkFiles", self.uploadHypernetworkFiles, methods=["POST"])
         self.add_api_route("/sdapi/v1/uploadDreamboothLoraFiles", self.uploadDreamboothLoraFiles, methods=["POST"])
 
         self.default_script_arg_txt2img = []
@@ -717,21 +718,56 @@ class Api:
 
     async def uploadEmbeddingFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], embedding_name: str):
         import os
+
+        if not os.path.exists('./data'):
+            os.mkdir('./data')
+        
+        if not os.path.exists('./data/textual_inversion'):
+            os.mkdir('./data/textual_inversion')
+        
+        embedding_path = os.path.join('./data/textual_inversion', embedding_name)
+        if not os.path.exists(embedding_path):
+            os.mkdir(embedding_path)
+        
         for file in files:
             save_file = await file.read()
-            
-            embedding_path = os.path.join('./data/textual_inversion', embedding_name)
-            if not os.path.exists(embedding_path):
-                os.mkdir(embedding_path)
+            if not os.path.exists(os.path.join(embedding_path, 'src')):
                 os.mkdir(os.path.join(embedding_path, 'src'))
+            if not os.path.exists(os.path.join(embedding_path, 'train')):
                 os.mkdir(os.path.join(embedding_path, 'train'))
+            if not os.path.exists(os.path.join(embedding_path, 'log')):
                 os.mkdir(os.path.join(embedding_path, 'log'))
             with open(os.path.join(embedding_path, 'src', file.filename), "wb") as fp:
                 fp.write(save_file)
-        return {"Embedding File_uploaded"}
+        return {"Embedding files uploaded"}
     
+    async def uploadHypernetworkFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], hypernetwork_name: str):
+        import os
+
+        if not os.path.exists('./data'):
+            os.mkdir('./data')
+        
+        if not os.path.exists('./data/hypernetwork'):
+            os.mkdir('./data/hypernetwork')
+        
+        hypernetwork_path = os.path.join('./data/hypernetwork', hypernetwork_name)
+        if not os.path.exists(hypernetwork_path):
+            os.mkdir(hypernetwork_path)
+        
+        for file in files:
+            save_file = await file.read()
+            if not os.path.exists(os.path.join(hypernetwork_path, 'log')):
+                os.mkdir(os.path.join(hypernetwork_path, 'log'))
+            with open(os.path.join(hypernetwork_path, file.filename), "wb") as fp:
+                fp.write(save_file)
+
+        return {"Hypernetwork files uploaded"}
+
     async def uploadDreamboothLoraFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], dreambooth_lora_name: str):
         import os
+
+        if not os.path.exists('./data'):
+            os.mkdir('./data')
 
         if not os.path.exists('./data/dreambooth_lora'):
             os.mkdir('./data/dreambooth_lora')
@@ -742,10 +778,11 @@ class Api:
             dreambooth_lora_path = os.path.join('./data/dreambooth_lora', dreambooth_lora_name)
             if not os.path.exists(dreambooth_lora_path):
                 os.mkdir(dreambooth_lora_path)
-                os.mkdir(os.path.join(dreambooth_lora_path, 'images'))
+                if not os.path.exists(os.path.join(dreambooth_lora_path, 'images')):
+                    os.mkdir(os.path.join(dreambooth_lora_path, 'images'))
             with open(os.path.join(dreambooth_lora_path, 'images', file.filename), "wb") as fp:
                 fp.write(save_file)
-        return {"Dreambooth lora file uploaded"}
+        return {"Dreambooth lora files uploaded"}
 
     def launch(self, server_name, port):
         self.app.include_router(self.router)

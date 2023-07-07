@@ -1171,7 +1171,8 @@ def create_ui():
                 with gr.Tab(label="Preprocess images", id="preprocess_images"):
                     # process_src = gr.Textbox(label='Source directory', elem_id="train_process_src")
                     # process_dst = gr.Textbox(label='Destination directory', elem_id="train_process_dst")
-                    files_upload = gr.File(file_count="multiple")
+                    embedding_files_upload = gr.File(label='Embedding Files Upload', file_count="multiple")
+                    hypernetwork_files_upload = gr.File(label='Hypernetwork Files Upload', file_count="multiple")
                     
                     process_width = gr.Slider(minimum=64, maximum=2048, step=8, label="Width", value=512, elem_id="train_process_width")
                     process_height = gr.Slider(minimum=64, maximum=2048, step=8, label="Height", value=512, elem_id="train_process_height")
@@ -1245,8 +1246,9 @@ def create_ui():
                         train_embedding_name = gr.Dropdown(label='Embedding', elem_id="train_embedding", choices=sorted(get_embeddings_req()))
                         create_refresh_button(train_embedding_name, sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings, lambda: {"choices": sorted(get_embeddings_req())}, "refresh_train_embedding_name")
 
-                        train_hypernetwork_name = gr.Dropdown(label='Hypernetwork', elem_id="train_hypernetwork", choices=sorted(shared.hypernetworks))
-                        create_refresh_button(train_hypernetwork_name, shared.reload_hypernetworks, lambda: {"choices": sorted(shared.hypernetworks)}, "refresh_train_hypernetwork_name")
+                        from modules.hypernetworks.hypernetwork import get_hypernetworks_req
+                        train_hypernetwork_name = gr.Dropdown(label='Hypernetwork', elem_id="train_hypernetwork", choices=sorted(get_hypernetworks_req()))
+                        create_refresh_button(train_hypernetwork_name, shared.reload_hypernetworks, lambda: {"choices": sorted(get_hypernetworks_req())}, "refresh_train_hypernetwork_name")
 
                     with FormRow():
                         embedding_learn_rate = gr.Textbox(label='Embedding Learning rate', placeholder="Embedding Learning rate", value="0.005", elem_id="train_embedding_learn_rate")
@@ -1336,9 +1338,15 @@ def create_ui():
             ]
         )
 
-        files_upload.upload(
-            fn=modules.textual_inversion.ui.uploadFiles,
-            inputs=[files_upload, train_embedding_name],
+        embedding_files_upload.upload(
+            fn=modules.textual_inversion.ui.uploadEmbeddingFilesReq,
+            inputs=[embedding_files_upload, train_embedding_name],
+            show_progress=True,
+        )
+
+        hypernetwork_files_upload.upload(
+            fn=modules.hypernetworks.ui.uploadHypernetworkFilesReq,
+            inputs=[hypernetwork_files_upload, train_hypernetwork_name],
             show_progress=True,
         )
         
@@ -1414,8 +1422,9 @@ def create_ui():
             ]
         )
 
+        from modules.hypernetworks.hypernetwork import train_hypernetwork_req
         train_hypernetwork.click(
-            fn=wrap_gradio_gpu_call(modules.hypernetworks.ui.train_hypernetwork, extra_outputs=[gr.update()]),
+            fn=wrap_gradio_gpu_call(train_hypernetwork_req, extra_outputs=[gr.update()]),
             _js="start_training_textual_inversion",
             inputs=[
                 dummy_component,
