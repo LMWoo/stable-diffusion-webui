@@ -14,8 +14,6 @@ def uploadFiles(files, train_embedding_name):
 
     reqFiles = []
 
-    print(train_embedding_name)
-
     for i, f in enumerate(files):
         filename = os.path.basename(f.name)
         saveFilename =  os.path.join("./data", filename)
@@ -39,11 +37,10 @@ def uploadFiles(files, train_embedding_name):
     requests.request("POST", url=url, files=reqFiles, headers=headers)
 
 
-def create_embedding(name, initialization_text, nvpt, overwrite_old):
+def create_embedding_req(name, initialization_text, nvpt, overwrite_old):
     import requests
     import json
     import base64
-    from modules.api.models import PreprocessResponse
 
     url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/create/embedding"
 
@@ -67,15 +64,16 @@ def create_embedding(name, initialization_text, nvpt, overwrite_old):
     }
 
     response = requests.request("POST", url=url, headers=headers, data=payload)
-    print(response.json())
+
+    return name, f"Created embedding: {name}", ""
 
 
-    return None, f"Created embedding", ""
-    # filename = modules.textual_inversion.textual_inversion.create_embedding(name, nvpt, overwrite_old, init_text=initialization_text)
+def create_embedding(name, initialization_text, nvpt, overwrite_old):
+    filename = modules.textual_inversion.textual_inversion.create_embedding(name, nvpt, overwrite_old, init_text=initialization_text)
 
-    # sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings()
+    sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings()
 
-    # return gr.Dropdown.update(choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())), f"Created: {filename}", ""
+    return gr.Dropdown.update(choices=sorted(sd_hijack.model_hijack.embedding_db.word_embeddings.keys())), f"Created: {filename}", ""
 
 
 def preprocess(*args):
@@ -96,7 +94,7 @@ def train_embedding(*args):
         embedding, filename = modules.textual_inversion.textual_inversion.train_embedding(*args)
 
         res = f"""
-Training {'interrupted' if shared.state.interrupted else 'finished'} .
+Training {'interrupted' if shared.state.interrupted else 'finished'} at {embedding.step} steps.
 Embedding saved to {html.escape(filename)}
 """
         return res, ""
@@ -105,4 +103,3 @@ Embedding saved to {html.escape(filename)}
     finally:
         if not apply_optimizations:
             sd_hijack.apply_optimizations()
-
