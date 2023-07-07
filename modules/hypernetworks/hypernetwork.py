@@ -536,7 +536,7 @@ def train_hypernetwork_req(id_task, hypernetwork_name, learn_rate, batch_size, g
         "learn_rate": learn_rate, 
         "batch_size": batch_size, 
         "gradient_step": gradient_step, 
-        "data_root": os.path.join('./data/hypernetwork', hypernetwork_name, 'log'), 
+        "data_root": os.path.join('./data/hypernetwork', hypernetwork_name, 'train'), 
         "log_directory": os.path.join('./data/hypernetwork', hypernetwork_name, 'log'), 
         "training_width": training_width, 
         "training_height": training_height, 
@@ -559,7 +559,7 @@ def train_hypernetwork_req(id_task, hypernetwork_name, learn_rate, batch_size, g
         "preview_cfg_scale": preview_cfg_scale, 
         "preview_seed": preview_seed, 
         "preview_width": preview_width, 
-        "preview_heig": preview_height,
+        "preview_height": preview_height,
     })
 
     auth = 'user:password'
@@ -576,6 +576,7 @@ def train_hypernetwork_req(id_task, hypernetwork_name, learn_rate, batch_size, g
 
     response = requests.request("POST", url=url, headers=headers, data=payload)
     
+    print(response.json())
     return hypernetwork_name, hypernetwork_name
 
 def train_hypernetwork(id_task, hypernetwork_name, learn_rate, batch_size, gradient_step, data_root, log_directory, training_width, training_height, varsize, steps, clip_grad_mode, clip_grad_value, shuffle_tags, tag_drop_out, latent_sampling_method, use_weight, create_image_every, save_hypernetwork_every, template_filename, preview_from_txt2img, preview_prompt, preview_negative_prompt, preview_steps, preview_sampler_index, preview_cfg_scale, preview_seed, preview_width, preview_height):

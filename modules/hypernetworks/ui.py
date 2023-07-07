@@ -15,10 +15,13 @@ def uploadHypernetworkFilesReq(files, train_hypernetwork_name):
 
     reqFiles = []
 
+    if not os.path.exists('./data'):
+        os.mkdir('./data')
+
     for i, f in enumerate(files):
         filename = os.path.basename(f.name)
         saveFilename = os.path.join("./data", filename)
-        shutil.move(f.name, filename)
+        shutil.move(f.name, saveFilename)
         reqFiles.append(('files', (filename, open(saveFilename, 'rb'), 'image/png')))
 
     url = "http://mwgpu.mydomain.blog:4000/sdapi/v1/uploadHypernetworkFiles?hypernetwork_name="+train_hypernetwork_name    

@@ -14,6 +14,9 @@ def uploadEmbeddingFilesReq(files, train_embedding_name):
 
     reqFiles = []
 
+    if not os.path.exists('./data'):
+        os.mkdir('./data')
+
     for i, f in enumerate(files):
         filename = os.path.basename(f.name)
         saveFilename =  os.path.join("./data", filename)

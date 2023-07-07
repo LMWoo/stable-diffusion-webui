@@ -1352,11 +1352,12 @@ def create_ui():
         
         run_preprocess.click(
             fn=wrap_gradio_gpu_call(modules.textual_inversion.ui.preprocess, extra_outputs=[gr.update()]),
-            _js="start_training_textual_inversion",
+            _js="preprocess hypernetwork and textual inversion",
             inputs=[
                 dummy_component,
                 # process_src,
                 # process_dst,
+                train_hypernetwork_name,
                 train_embedding_name,
                 process_width,
                 process_height,

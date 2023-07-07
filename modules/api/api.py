@@ -728,15 +728,15 @@ class Api:
         embedding_path = os.path.join('./data/textual_inversion', embedding_name)
         if not os.path.exists(embedding_path):
             os.mkdir(embedding_path)
-        
+        if not os.path.exists(os.path.join(embedding_path, 'src')):
+            os.mkdir(os.path.join(embedding_path, 'src'))
+        if not os.path.exists(os.path.join(embedding_path, 'train')):
+            os.mkdir(os.path.join(embedding_path, 'train'))
+        if not os.path.exists(os.path.join(embedding_path, 'log')):
+            os.mkdir(os.path.join(embedding_path, 'log'))
+
         for file in files:
             save_file = await file.read()
-            if not os.path.exists(os.path.join(embedding_path, 'src')):
-                os.mkdir(os.path.join(embedding_path, 'src'))
-            if not os.path.exists(os.path.join(embedding_path, 'train')):
-                os.mkdir(os.path.join(embedding_path, 'train'))
-            if not os.path.exists(os.path.join(embedding_path, 'log')):
-                os.mkdir(os.path.join(embedding_path, 'log'))
             with open(os.path.join(embedding_path, 'src', file.filename), "wb") as fp:
                 fp.write(save_file)
         return {"Embedding files uploaded"}
@@ -753,14 +753,17 @@ class Api:
         hypernetwork_path = os.path.join('./data/hypernetwork', hypernetwork_name)
         if not os.path.exists(hypernetwork_path):
             os.mkdir(hypernetwork_path)
-        
+        if not os.path.exists(os.path.join(hypernetwork_path, 'src')):
+            os.mkdir(os.path.join(hypernetwork_path, 'src'))
+        if not os.path.exists(os.path.join(hypernetwork_path, 'train')):
+            os.mkdir(os.path.join(hypernetwork_path, 'train'))
+        if not os.path.exists(os.path.join(hypernetwork_path, 'log')):
+            os.mkdir(os.path.join(hypernetwork_path, 'log'))
+
         for file in files:
             save_file = await file.read()
-            if not os.path.exists(os.path.join(hypernetwork_path, 'log')):
-                os.mkdir(os.path.join(hypernetwork_path, 'log'))
-            with open(os.path.join(hypernetwork_path, file.filename), "wb") as fp:
+            with open(os.path.join(hypernetwork_path, 'src', file.filename), "wb") as fp:
                 fp.write(save_file)
-
         return {"Hypernetwork files uploaded"}
 
     async def uploadDreamboothLoraFiles(self, files: Annotated[List[UploadFile], File(description="Multiple files as UploadFile")], dreambooth_lora_name: str):
