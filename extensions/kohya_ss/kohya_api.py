@@ -15,6 +15,7 @@ class TutorialResponse(BaseModel):
     data: str = Field(title='data', description="tutorial data response")
 
 class DreamboothLoraFolderPreparationRequest(BaseModel):
+    util_output_model_name : str
     util_training_images_dir_input : Any
     util_training_images_repeat_input : Any
     util_instance_prompt_input : Any
@@ -191,6 +192,7 @@ class Api:
     def dreambooth_lora_folder_preparation(self, req: DreamboothLoraFolderPreparationRequest):
         from library.dreambooth_folder_creation_gui import dreambooth_folder_preparation
         dreambooth_folder_preparation(
+            util_output_model_name = req.util_output_model_name,
             util_training_images_dir_input = req.util_training_images_dir_input,
             util_training_images_repeat_input = req.util_training_images_repeat_input,
             util_instance_prompt_input = req.util_instance_prompt_input,

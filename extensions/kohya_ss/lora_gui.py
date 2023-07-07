@@ -685,6 +685,8 @@ def train_model(
     rank_dropout,
     module_dropout,
 ):
+    train_data_dir = os.path.join("./data/dreambooth_lora", output_name, 'img')
+    logging_dir = os.path.join("./data/dreambooth_lora", output_name, 'log')
     output_dir = "./models/Lora"
     print_only_bool = True if print_only.get('label') == 'True' else False
     log.info(f'Start training LoRA {LoRA_type} ...')

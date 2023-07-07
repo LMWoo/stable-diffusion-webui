@@ -22,6 +22,7 @@ def copy_info_to_Folders_tab(training_folder):
     return img_folder, reg_folder, model_folder, log_folder
 
 def dreambooth_folder_preparation_req(
+    util_output_model_name,
     util_training_images_dir_input,
     util_training_images_repeat_input,
     util_instance_prompt_input,
@@ -45,6 +46,7 @@ def dreambooth_folder_preparation_req(
     from extensions.kohya_ss.kohya_api import DreamboothLoraFolderPreparationRequest
 
     req = DreamboothLoraFolderPreparationRequest(
+        util_output_model_name= util_output_model_name,
         util_training_images_dir_input =  util_training_images_dir_input,
         util_training_images_repeat_input =  util_training_images_repeat_input,
         util_instance_prompt_input =  util_instance_prompt_input,
@@ -63,6 +65,7 @@ def dreambooth_folder_preparation_req(
     print(response.json())
 
 def dreambooth_folder_preparation(
+    util_output_model_name,
     util_training_images_dir_input,
     util_training_images_repeat_input,
     util_instance_prompt_input,
@@ -71,6 +74,8 @@ def dreambooth_folder_preparation(
     util_class_prompt_input,
     util_training_dir_output,
 ):
+    util_training_images_dir_input = os.path.join('./data/dreambooth_lora', util_output_model_name, 'images')
+    util_training_dir_output = os.path.join('./data/dreambooth_lora', util_output_model_name)
 
     # Check if the input variables are empty
     if not len(util_training_dir_output):
@@ -166,6 +171,11 @@ def gradio_dreambooth_folder_creation_tab(
             'This utility will create the necessary folder structure for the training images and optional regularization images needed for the kohys_ss Dreambooth/LoRA method to function correctly.'
         )
         with gr.Row():
+            util_output_model_name = gr.Textbox(
+                label='Output model name',
+                interactive=True,
+            )
+        with gr.Row():
             util_instance_prompt_input = gr.Textbox(
                 label='Instance prompt',
                 placeholder='Eg: asd',
@@ -232,6 +242,7 @@ def gradio_dreambooth_folder_creation_tab(
         button_prepare_training_data.click(
             dreambooth_folder_preparation_req,
             inputs=[
+                util_output_model_name,
                 util_training_images_dir_input,
                 util_training_images_repeat_input,
                 util_instance_prompt_input,
