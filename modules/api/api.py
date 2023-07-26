@@ -775,15 +775,14 @@ class Api:
 
         if not os.path.exists('./data/dreambooth_lora'):
             os.mkdir('./data/dreambooth_lora')
-            
+
         for file in files:
             save_file = await file.read()
-
             dreambooth_lora_path = os.path.join('./data/dreambooth_lora', dreambooth_lora_name)
             if not os.path.exists(dreambooth_lora_path):
                 os.mkdir(dreambooth_lora_path)
-                if not os.path.exists(os.path.join(dreambooth_lora_path, 'images')):
-                    os.mkdir(os.path.join(dreambooth_lora_path, 'images'))
+            if not os.path.exists(os.path.join(dreambooth_lora_path, 'images')):
+                os.mkdir(os.path.join(dreambooth_lora_path, 'images'))
             with open(os.path.join(dreambooth_lora_path, 'images', file.filename), "wb") as fp:
                 fp.write(save_file)
         return {"Dreambooth lora files uploaded"}

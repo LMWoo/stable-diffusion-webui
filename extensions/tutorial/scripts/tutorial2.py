@@ -71,7 +71,7 @@ def on_ui_tabs():
     return [(interface, "Tutorial_TabName", "Tutorial_ID")]
 
 '''
-API Extensions 할 경우 on_app_started()
+on_app_started, on_ui_tabs 호출해야 추가됨
 '''
 script_callbacks.on_app_started(on_app_started)
 script_callbacks.on_ui_tabs(on_ui_tabs)
