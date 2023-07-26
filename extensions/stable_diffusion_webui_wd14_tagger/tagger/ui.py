@@ -532,6 +532,10 @@ def on_ui_tabs():
             outputs=[info]
         )
 
+        '''
+        upload_images : 이미지 업로드 완료되면 호출되는 함수
+        output_modelname : Lora 모델 이름
+        '''
         files_upload.upload(
             fn=upload_images,
             inputs=[files_upload, output_modelname],
@@ -544,6 +548,10 @@ def on_ui_tabs():
         #     show_progress=True,
         # )
 
+        '''
+        on_interrogate_req : Interrogate 누르면 호출되는 함수
+        output_modelname : Lora 모델 이름
+        '''
         submit.click(
             fn= on_interrogate_req,
             inputs=[

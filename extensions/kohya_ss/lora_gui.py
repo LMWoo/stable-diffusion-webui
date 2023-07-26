@@ -1905,6 +1905,10 @@ def lora_tab(
         show_progress=False,
     )
 
+    '''
+    button_run : Lora Train Model 버튼 
+    train_model_req : button_run 누르면 호출 되는 함수
+    '''
     button_run.click(
         train_model_req,
         inputs=[dummy_headless] + [dummy_db_false] + settings_list,

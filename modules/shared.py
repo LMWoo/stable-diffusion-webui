@@ -148,6 +148,7 @@ class State:
     def skip(self):
         self.skipped = True
 
+    # Interrupt Request 함수
     def interrupt(self):
         import base64
         import requests
@@ -296,7 +297,7 @@ def options_section(section_identifier, options_dict):
 
     return options_dict
 
-
+# checkpoint 모델 리스트들 받아옴
 def list_checkpoint_tiles():
     import base64
     import requests
@@ -438,6 +439,7 @@ options_templates.update(options_section(('training', "Training"), {
 }))
 
 options_templates.update(options_section(('sd', "Stable Diffusion"), {
+    # list_checkpoint_tiles : CheckPoint 모델 리스트 받아오는 함수 ex) {"choices" : ["item1", "item2", "item3"]}
     "sd_model_checkpoint": OptionInfo(None, "Stable Diffusion checkpoint", gr.Dropdown, lambda: {"choices": list_checkpoint_tiles()}, refresh=refresh_checkpoints),
     "sd_checkpoint_cache": OptionInfo(0, "Checkpoints to cache in RAM", gr.Slider, {"minimum": 0, "maximum": 10, "step": 1}),
     "sd_vae_checkpoint_cache": OptionInfo(0, "VAE Checkpoints to cache in RAM", gr.Slider, {"minimum": 0, "maximum": 10, "step": 1}),

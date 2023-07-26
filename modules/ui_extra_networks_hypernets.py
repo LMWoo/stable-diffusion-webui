@@ -8,6 +8,7 @@ class ExtraNetworksPageHypernetworks(ui_extra_networks.ExtraNetworksPage):
     def __init__(self):
         super().__init__('Hypernetworks')
 
+    # hypernetworks 모델 Refresh함수
     def refresh(self):
         from modules.hypernetworks.hypernetwork import Hypernetwork
         import base64

@@ -528,6 +528,9 @@ def create_ui():
             connect_reuse_seed(seed, reuse_seed, generation_info, dummy_component, is_subseed=False)
             connect_reuse_seed(subseed, reuse_subseed, generation_info, dummy_component, is_subseed=True)
 
+            '''
+            modules.txt2img.txt2imgReq : txt2img에서 Generate 눌렀을 때 호출되는 함수
+            '''
             txt2img_args = dict(
                 fn=wrap_gradio_gpu_call(modules.txt2img.txt2imgReq, extra_outputs=[None, '', '']),
                 _js="submit",
@@ -571,6 +574,8 @@ def create_ui():
             )
 
             txt2img_prompt.submit(**txt2img_args)
+            
+            # submit : txt2img에서 Genereate버튼
             submit.click(**txt2img_args)
 
             res_switch_btn.click(fn=None, _js="function(){switchWidthHeight('txt2img')}", inputs=None, outputs=None, show_progress=False)
@@ -1242,10 +1247,20 @@ def create_ui():
                 with gr.Tab(label="Train", id="train"):
                     gr.HTML(value="<p style='margin-bottom: 0.7em'>Train an embedding or Hypernetwork; you must specify a directory with a set of 1:1 ratio images <a href=\"https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Textual-Inversion\" style=\"font-weight:bold;\">[wiki]</a></p>")
                     with FormRow():
+                        ''' 
+                        get_embeddings_req 함수 : embedding 모델 리스트 불러오는 함수
+                        train_embedding_name : Dropdown에서 선택한 embedding 이름
+                        create_refresh_button : "choices"에 dropdown 아이템 리스트들 들어감 ex) "choices": sorted(["item1", "item2", "item3"])
+                        '''
                         from modules.textual_inversion.textual_inversion import get_embeddings_req
                         train_embedding_name = gr.Dropdown(label='Embedding', elem_id="train_embedding", choices=sorted(get_embeddings_req()))
                         create_refresh_button(train_embedding_name, sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings, lambda: {"choices": sorted(get_embeddings_req())}, "refresh_train_embedding_name")
 
+                        ''' 
+                        get_hypernetworks_req 함수 : hypernetworks 모델 리스트 불러오는 함수
+                        train_hypernetwork_name : Dropdown에서 선택한 hypernetwork 이름
+                        create_refresh_button : "choices"에 dropdown 아이템 리스트들 들어감 ex) "choices": sorted(["item1", "item2", "item3"])
+                        '''
                         from modules.hypernetworks.hypernetwork import get_hypernetworks_req
                         train_hypernetwork_name = gr.Dropdown(label='Hypernetwork', elem_id="train_hypernetwork", choices=sorted(get_hypernetworks_req()))
                         create_refresh_button(train_hypernetwork_name, shared.reload_hypernetworks, lambda: {"choices": sorted(get_hypernetworks_req())}, "refresh_train_hypernetwork_name")
@@ -1303,6 +1318,11 @@ def create_ui():
                 gr.HTML(elem_id="ti_progress", value="")
                 ti_outcome = gr.HTML(elem_id="ti_error", value="")
 
+        '''
+        create_embedding : embedding 모델 생성하는 버튼 
+        create_embedding_req : create embedding 버튼 누르면 호출되는 함수
+        new_embedding_name : 생성할 embedding 모델 이름
+        '''
         create_embedding.click(
             fn=modules.textual_inversion.ui.create_embedding_req,
             inputs=[
@@ -1337,19 +1357,35 @@ def create_ui():
                 ti_outcome,
             ]
         )
-
+        
+        '''
+        embedding_files_upload : Embedding Gradio UploadFile 객체
+        modules.textual_inversion.ui.uploadEmbeddingFilesReq : 파일 업로드 되면(Download 뜨면) 호출되는 함수
+        train_embedding_name : Train탭에서 고른 Embedding 이름
+        '''
         embedding_files_upload.upload(
             fn=modules.textual_inversion.ui.uploadEmbeddingFilesReq,
             inputs=[embedding_files_upload, train_embedding_name],
             show_progress=True,
         )
 
+        '''
+        hypernetwork_files_upload : Hypernetwork Gradio UploadFile 객체
+        uploadHypernetworkFilesReq : 파일 업로드 되면(Download 뜨면) 호출되는 함수
+        train_hypernetwork_name : Train탭에서 고른 hypernetwork 모델 이름
+        '''
         hypernetwork_files_upload.upload(
             fn=modules.hypernetworks.ui.uploadHypernetworkFilesReq,
             inputs=[hypernetwork_files_upload, train_hypernetwork_name],
             show_progress=True,
         )
         
+        '''
+        run_preprocess : Preprocess 버튼
+        train_embedding_name : Train탭에서 고른 embedding 모델 이름
+        train_hypernetwork_name : Train탭에서 고른 hypernetwork 모델 이름
+        preprocessReq : 버튼 눌르면 호출 되는 함수
+        '''
         run_preprocess.click(
             fn=wrap_gradio_gpu_call(modules.textual_inversion.ui.preprocessReq, extra_outputs=[gr.update()]),
             _js="preprocess hypernetwork and textual inversion",
@@ -1388,6 +1424,11 @@ def create_ui():
             ],
         )
 
+        '''
+        train_embedding : Embedding 모델 Train 버튼
+        train_embedding_name : Train탭에서 고른 embedding 모델 이름
+        train_embedding_req : TrainEmbedding 버튼 누르면 호출 되는 함수
+        '''
         from modules.textual_inversion.textual_inversion import train_embedding_req
         train_embedding.click(
             fn=wrap_gradio_gpu_call(train_embedding_req, extra_outputs=[gr.update()]),
@@ -1423,6 +1464,11 @@ def create_ui():
             ]
         )
 
+        '''
+        train_hypernetwork : Hypernetworks 모델 Train 버튼
+        train_hypernetwork_name : Train탭에서 고른 Hypernetworks 모델 이름
+        train_hypernetwork_req : Train Hypernetworks 버튼 누르면 호출 되는 함수
+        '''
         from modules.hypernetworks.hypernetwork import train_hypernetwork_req
         train_hypernetwork.click(
             fn=wrap_gradio_gpu_call(train_hypernetwork_req, extra_outputs=[gr.update()]),

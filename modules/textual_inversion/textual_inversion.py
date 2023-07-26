@@ -368,6 +368,7 @@ def validate_train_inputs(model_name, learn_rate, batch_size, gradient_step, dat
     if save_model_every or create_image_every:
         assert log_directory, "Log directory is empty"
 
+# embedding 모델들 리스트 받아오는 함수
 def get_embeddings_req():
     import base64
     import requests
@@ -391,7 +392,8 @@ def get_embeddings_req():
     res = EmbeddingsResponse(**(response.json()))
 
     return res.loaded.keys()
-    
+
+# Train Embedding 버튼 눌르면 호출 되는 함수
 def train_embedding_req(id_task, embedding_name, learn_rate, batch_size, gradient_step, data_root, log_directory, training_width, training_height, varsize, steps, clip_grad_mode, clip_grad_value, shuffle_tags, tag_drop_out, latent_sampling_method, use_weight, create_image_every, save_embedding_every, template_filename, save_image_with_stored_embedding, preview_from_txt2img, preview_prompt, preview_negative_prompt, preview_steps, preview_sampler_index, preview_cfg_scale, preview_seed, preview_width, preview_height):
     import requests
     import json

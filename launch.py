@@ -23,6 +23,8 @@ prepare_environment = launch_utils.prepare_environment
 configure_for_tests = launch_utils.configure_for_tests
 start = launch_utils.start
 
+import os
+os.environ["TMPDIR"] = "./tmp"
 
 def main():
     if not args.skip_prepare_environment:

@@ -553,6 +553,7 @@ class Api:
             for upscale_mode in [*(shared.latent_upscale_modes or {})]
         ]
 
+    # checkpoints 모델 리스트 받아오는 API
     def get_sd_models(self):
         return [{"title": x.title, "model_name": x.model_name, "hash": x.shorthash, "sha256": x.sha256, "filename": x.filename, "config": find_checkpoint_config_near_filename(x)} for x in checkpoints_list.values()]
 

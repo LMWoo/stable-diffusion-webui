@@ -6,6 +6,7 @@ import modules.textual_inversion.textual_inversion
 import modules.textual_inversion.preprocess
 from modules import sd_hijack, shared
 
+# Embedding Data Upload 요청 하는 함수
 def uploadEmbeddingFilesReq(files, train_embedding_name):
     import os
     import shutil
@@ -40,6 +41,7 @@ def uploadEmbeddingFilesReq(files, train_embedding_name):
     requests.request("POST", url=url, files=reqFiles, headers=headers)
 
 
+# Create Embedding 버튼 눌렀을 때 호출 되는 함수
 def create_embedding_req(name, initialization_text, nvpt, overwrite_old):
     import requests
     import json

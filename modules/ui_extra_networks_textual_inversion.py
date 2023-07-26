@@ -9,6 +9,7 @@ class ExtraNetworksPageTextualInversion(ui_extra_networks.ExtraNetworksPage):
         super().__init__('Textual Inversion')
         self.allow_negative_prompt = True
 
+    # Embedding 모델 Refresh 하는 함수
     def refresh(self):
         from modules.textual_inversion.textual_inversion import Embedding
         import base64
@@ -44,6 +45,7 @@ class ExtraNetworksPageTextualInversion(ui_extra_networks.ExtraNetworksPage):
         sd_hijack.model_hijack.embedding_db.word_embeddings.update(embeddings)
         # sd_hijack.model_hijack.embedding_db.load_textual_inversion_embeddings(force_reload=True)
 
+    # sort_key 주석 풀면 에러남
     def list_items(self):
         for index, embedding in enumerate(sd_hijack.model_hijack.embedding_db.word_embeddings.values()):
             # path, ext = os.path.splitext(embedding.filename)

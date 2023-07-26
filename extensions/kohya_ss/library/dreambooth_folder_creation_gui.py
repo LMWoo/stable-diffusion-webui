@@ -21,6 +21,7 @@ def copy_info_to_Folders_tab(training_folder):
 
     return img_folder, reg_folder, model_folder, log_folder
 
+# lora 데이터 폴더 세팅 Request 함수
 def dreambooth_folder_preparation_req(
     util_output_model_name,
     util_training_images_dir_input,
@@ -238,6 +239,11 @@ def gradio_dreambooth_folder_creation_tab(
             button_util_training_dir_output.click(
                 get_folder_path, outputs=util_training_dir_output
             )
+            
+        '''
+        dreambooth_folder_preparation_req : Prepare training data 누르면 호출되는 함수
+        util_output_model_name : Lora 모델 이름
+        '''
         button_prepare_training_data = gr.Button('Prepare training data')
         button_prepare_training_data.click(
             dreambooth_folder_preparation_req,

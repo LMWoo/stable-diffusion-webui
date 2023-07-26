@@ -6,6 +6,7 @@ import tqdm
 from modules import paths, shared, images, deepbooru
 from modules.textual_inversion import autocrop
 
+# Embedding Data 전처리 Request 보내는 함수
 def preprocessReq(id_task, hypernetwork_name, embedding_name, process_width, process_height, preprocess_txt_action, process_keep_original_size, process_flip, process_split, process_caption, process_caption_deepbooru=False, split_threshold=0.5, overlap_ratio=0.2, process_focal_crop=False, process_focal_crop_face_weight=0.9, process_focal_crop_entropy_weight=0.3, process_focal_crop_edges_weight=0.5, process_focal_crop_debug=False, process_multicrop=None, process_multicrop_mindim=None, process_multicrop_maxdim=None, process_multicrop_minarea=None, process_multicrop_maxarea=None, process_multicrop_objective=None, process_multicrop_threshold=None):
     import requests
     import json
